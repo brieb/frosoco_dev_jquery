@@ -3,20 +3,87 @@
 <head>
   <title>index</title>
   <!-- <link rel="stylesheet" href="css/Aristo/jquery-ui-1.8.7.custom.css" type="text/css"> -->
-  <link rel="stylesheet" href="css/Absolution/jquery.ui.all.css" type="text/css" media="screen" title="no title" charset="utf-8">
-  <script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
-  <script src="js/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
+  <!-- <link rel="stylesheet" href="css/Absolution/jquery.ui.all.css" type="text/css" media="screen" title="no title" charset="utf-8"> -->
+  <link rel="stylesheet" href="css/Aristo/jquery-ui-1.8.7.custom.css" type="text/css" media="screen" title="no title" charset="utf-8">
+  
+  <script src="lib/jquery.js" type="text/javascript" charset="utf-8"></script>
+  <script src="lib/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
+  <script src="lib/jquery-tmpl/jquery.tmpl.js" type="text/javascript" charset="utf-8"></script>
+  <script src="lib/jquery-tmpl/jquery.tmplPlus.js" type="text/javascript" charset="utf-8"></script>  
+  <script src="lib/DataTables-1.8.1/media/js/jquery.dataTables.js" type="text/javascript" charset="utf-8"></script>
+  
+  <link href="http://fonts.googleapis.com/css?family=Cabin:400,400italic,500,500italic,600,600italic,bold,bolditalic" rel="stylesheet" type="text/css">
+  <style>
+    * {
+      font-family: 'Cabin', sans-serif;
+    }
+    .center {
+      vertical-align: middle;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
+  <script id="userTmpl" type="text/x-jquery-tmpl">
+    <div>
+      ${name}
+    </div>
+  </script>
+  
   <script>
-  $(function(){
+  $(document).ready(function() {
+    function UserController() {
+      this.users = [];
+    }
+    UserController.prototype.getUsers = function() {
+      $.get('ajax/users.py', function(data) {
+        this.users = data;
+        $("#userList").append("#userTmpl", data);
+      }.bind(this));
+    }
+    
+    // var userController = new UserController();
+    // userController.getUsers();
+    
     $.get('ajax/users.py', function(data) {
-      console.log(data);
-      console.log('Load was performed.');
+      var elem = data[0];
+      var cols = [];
+      for (var key in elem) {
+        if (elem.hasOwnProperty(key)) {
+          var isVisible = (key !== 'id');
+          cols.push(
+            {
+              'sTitle' : key,
+              'mDataProp' : key,
+              'bVisible' : isVisible,
+              "sClass": "center"
+            }
+          );
+        }
+      }
+      
+      var tableData = {};
+      tableData['aaData'] = data;
+      tableData['aoColumns'] = cols;
+      
+      tableData['bPaginate'] = false;
+      tableData['bInfo'] = false;
+      tableData['bFilter'] = true;
+      tableData['bAutoWidth'] = true;
+      tableData['bJQueryUI'] = true;
+      
+      var oTable = $('#example').dataTable(tableData);
+      oTable.css('width', '100%');
     });
+    
   });
   </script>
 
-  <div id="residentList"></div>
+  <div id="userList"></div>
+  <div id="demo">
+    <table id="example" cellpadding="0" cellspacing="0" border="0">
+    </table>
+  </div>
+  
 </body>
 </html>
