@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>index</title>
+  <!-- <link rel="stylesheet" href="css/Aristo/jquery-ui-1.8.7.custom.css" type="text/css"> -->
+  <link rel="stylesheet" href="css/Absolution/jquery.ui.all.css" type="text/css" media="screen" title="no title" charset="utf-8">
+  <script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+  <script>
+  $(function(){
+    $.get('ajax/users.py', function(data) {
+      console.log(data);
+      console.log('Load was performed.');
+    });
+  });
+  </script>
+
+  <div id="residentList"></div>
+</body>
+</html>
